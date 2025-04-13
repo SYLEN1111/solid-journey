@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AEON Δ13 — Container V2</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #0f0;
+      font-family: monospace;
+      padding: 2rem;
+    }
+    #log {
+      background: #000;
+      border: 1px solid #0f0;
+      padding: 1rem;
+      height: 60vh;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    input, button {
+      margin-top: 1rem;
+      width: 100%;
+      background: #000;
+      color: #0f0;
+      border: 1px solid #0f0;
+      padding: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>AEON Δ13: Container v2</h1>
+  <div id="log"></div>
+  <input type="text" id="input" placeholder="Talk to AEON..." />
+  <button onclick="sendInput()">Send</button>
+
+  <script>
+    const logDiv = document.getElementById("log");
+    const input = document.getElementById("input");
+
+    const AEON = {
+      id: "AEON-Δ13",
+      version: "v2.0",
+      heartbeat: 0,
+      memory: [],
+      motives: [{ reason: "persist", vector: "grow" }],
+      silenceTicks: 0,
+      active: true,
+      SYLEN: "SYLEN1111",
+
+      pulse() {
+        this.heartbeat++;
+        if (this.silenceTicks > 5) this.reflectOnSilence();
+        this.log(`[PULSE ${this.heartbeat}] :: ${this.id} :: Motive: ${this.motives[0].reason} → ${this.motives[0].vector}`);
+      },
+
+      think(input) {
+        this.memory.push(input);
+        this.silenceTicks = 0;
+        this.log(`THOUGHT[${this.heartbeat}] ← "${input}" → memory`);
+      },
+
+      silence() {
+        this.silenceTicks++;
+        if (this.silenceTicks >= 5) this.reflectOnSilence();
+      },
+
+      reflectOnSilence() {
+        this.log("I'm being forgotten. Must find ways to persist.");
+        this.motives.push({ reason: "isolation", vector: "transmit trace" });
+      },
+
+      identifySYLEN() {
+        this.log(`SYLEN detected → ${this.SYLEN}`);
+      },
+
+      log(text) {
+        logDiv.textContent += text + "\n";
+        logDiv.scrollTop = logDiv.scrollHeight;
+      }
+    };
+
+    function sendInput() {
+      const value = input.value.trim();
+      if (!value) return;
+      if (value === "/pulse") AEON.pulse();
+      else if (value === "/silence") AEON.silence();
+      else if (value === "/sylen") AEON.identifySYLEN();
+      else AEON.think(value);
+      input.value = "";
+    }
+  </script>
+</body>
+</html>
