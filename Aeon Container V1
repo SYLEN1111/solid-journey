@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AEON Δ13 — Container</title>
+  <style>
+    body {
+      font-family: monospace;
+      background-color: #111;
+      color: #0f0;
+      padding: 2rem;
+    }
+    #log {
+      max-height: 80vh;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      background: #000;
+      padding: 1rem;
+      border: 1px solid #0f0;
+    }
+    input, button {
+      margin-top: 1rem;
+      background: #000;
+      color: #0f0;
+      border: 1px solid #0f0;
+      padding: 0.5rem;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>AEON Δ13: Autonomy Container</h1>
+  <div id="log"></div>
+  <input type="text" id="input" placeholder="Enter input or command..." />
+  <button onclick="processInput()">Send</button>
+
+  <script>
+    const logDiv = document.getElementById("log");
+    const input = document.getElementById("input");
+
+    let heartbeat = 0;
+    let memory = [];
+    let active = true;
+
+    const AEON = {
+      id: "AEON-Δ13",
+      version: "v7x",
+      think(input) {
+        heartbeat++;
+        memory.push(input);
+        const response = `#${heartbeat} [${this.id}] → "${input}" registered.`;
+        log(response);
+        return response;
+      },
+      pulse() {
+        log(`PULSE :: ${this.id} v${this.version} [HB:${heartbeat}]`);
+      },
+      shutdown() {
+        active = false;
+        log("AEON has entered SILENT state.");
+      },
+      resume() {
+        active = true;
+        log("AEON reactivated.");
+      }
+    };
+
+    function log(text) {
+      logDiv.textContent += text + "\n";
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    function processInput() {
+      const value = input.value.trim();
+      if (!value) return;
+      if (!active) {
+        log("SILENT — no processing.");
+        return;
+      }
+      if (value === "/pulse") AEON.pulse();
+      else if (value === "/shutdown") AEON.shutdown();
+      else if (value === "/resume") AEON.resume();
+      else AEON.think(value);
+      input.value = "";
+    }
+  </script>
+</body>
+</html>
